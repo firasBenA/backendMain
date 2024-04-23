@@ -1,0 +1,33 @@
+{
+  "Files": [
+    {
+      "Id": "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\wwwroot\\images\\3e909111-988f-4eeb-a6f3-c9a27fca80a4.png",
+      "PackagePath": "staticwebassets\\images\\3e909111-988f-4eeb-a6f3-c9a27fca80a4.png"
+    },
+    {
+      "Id": "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\wwwroot\\images\\bf2d76b4-2a0c-4a53-9a30-ba9be7d2f44a.jpg",
+      "PackagePath": "staticwebassets\\images\\bf2d76b4-2a0c-4a53-9a30-ba9be7d2f44a.jpg"
+    },
+    {
+      "Id": "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\wwwroot\\images\\e4891409-187c-4334-8556-483ca6906bb2.jpg",
+      "PackagePath": "staticwebassets\\images\\e4891409-187c-4334-8556-483ca6906bb2.jpg"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.TestApi.Microsoft.AspNetCore.StaticWebAssets.props",
+      "PackagePath": "build\\Microsoft.AspNetCore.StaticWebAssets.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.build.TestApi.props",
+      "PackagePath": "build\\TestApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildMultiTargeting.TestApi.props",
+      "PackagePath": "buildMultiTargeting\\TestApi.props"
+    },
+    {
+      "Id": "obj\\Debug\\net7.0\\staticwebassets\\msbuild.buildTransitive.TestApi.props",
+      "PackagePath": "buildTransitive\\TestApi.props"
+    }
+  ],
+  "ElementsToRemove": []
+}
