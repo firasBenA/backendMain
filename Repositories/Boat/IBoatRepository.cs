@@ -9,6 +9,7 @@ namespace TestApi.Repositories
         Task<Boat> GetByIdAsync(int id);
         Task<List<Boat>?> GetAllBoats();
         Task<Boat> GetByIdBoat(int id);
+        Task<List<Boat>> GetAllBoatsByUserId(int userId);
         Task<string> UploadImageAsync(IFormFile file);
         Task<bool> AddBoat(Boat Boat);
         Task<bool> UpdateBoat(Boat Boat);

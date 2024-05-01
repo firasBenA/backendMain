@@ -35,7 +35,7 @@ namespace TestApi.Controllers
             return boats;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("boat/{id}")]
         public async Task<ActionResult<Boat>> GetBoatById(int id)
         {
             var boat = await _boatRepository.GetByIdBoat(id);
@@ -44,6 +44,17 @@ namespace TestApi.Controllers
                 return NotFound(); // Returns 404 if boat with the given id is not found
             }
             return boat;
+        }
+
+        [HttpGet("boats/user/{userId}")]
+        public async Task<ActionResult<List<Boat>>> GetAllBoatsByUserId(int userId)
+        {
+            var boats = await _boatRepository.GetAllBoatsByUserId(userId);
+            if (boats == null || !boats.Any())
+            {
+                return NotFound(); // Returns 404 if no boats are found for the given user ID
+            }
+            return boats;
         }
 
         [HttpPut("/updateBoatImage/{boatId}")]
@@ -55,7 +66,7 @@ namespace TestApi.Controllers
                     return BadRequest("File is null or empty.");
 
                 var imageUrl = await _boatRepository.UploadImageAsync(file);
-                imageUrl = imageUrl.Replace("wwwroot", ""); 
+                imageUrl = imageUrl.Replace("wwwroot", "");
                 imageUrl = "/" + imageUrl;
                 var boat = await _boatRepository.GetByIdBoat(boatId);
                 if (boat != null)

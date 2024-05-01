@@ -1,4 +1,4 @@
-using TestApi.Models.Dtos;
+using JwtAuthAspNet7WebAPI.Core.Dtos;
 
 namespace TestApi.Repositories
 {

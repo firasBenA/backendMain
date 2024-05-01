@@ -38,7 +38,7 @@ namespace TestApi.Controllers
             var token = GenerateJwtToken(user);
 
             // Return the token in the response
-            return Ok(new { token });
+            return Ok(new { token ,user});
         }
 
         private string GenerateJwtToken(User user)

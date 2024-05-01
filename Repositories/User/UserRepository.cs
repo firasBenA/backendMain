@@ -6,6 +6,7 @@ using TestApi.Models;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TestApi.Repositories
 {
@@ -123,6 +124,27 @@ namespace TestApi.Repositories
 
         }
 
+        public async Task<string> UploadImageAsync([FromForm] IFormFile file)
+        {
+            try
+            {
+                var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+
+                var filePath = Path.Combine("wwwroot/avatar/", fileName);
+
+                using (var stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(stream);
+
+                }
+
+                return filePath;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to upload image.", ex);
+            }
+        }
         public async Task<bool> DeleteUser(int id)
         {
 
@@ -168,6 +190,11 @@ namespace TestApi.Repositories
         private User NotFound()
         {
             throw new NotImplementedException();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }

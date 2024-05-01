@@ -10,10 +10,13 @@ namespace TestApi.Repositories
         Task<User> GetByIdAsync(int id);
         Task<List<User>?> GetAllUsers();
         Task<User> GetByIdUser(int id);
+        Task<string> UploadImageAsync(IFormFile file);
         Task<bool> AddUser(User user);
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUser(int id);
         Task<bool> UserExistsUser(int id);
+        Task SaveChangesAsync();
+
     }
 
 }

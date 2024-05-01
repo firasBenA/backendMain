@@ -6,7 +6,7 @@ namespace TestApi.Models;
 
 public partial class AuthContext : DbContext
 {
-
+    
     public AuthContext(DbContextOptions<AuthContext> options)
         : base(options)
     {
@@ -28,20 +28,16 @@ public partial class AuthContext : DbContext
 
     public virtual DbSet<Chat> Chats { get; set; }
 
+    public virtual DbSet<ChatMessage> ChatMessages { get; set; }
+
     public virtual DbSet<FeedBack> FeedBacks { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
-
-
-
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        base.OnModelCreating(modelBuilder);
-
         modelBuilder.Entity<AspNetRole>(entity =>
         {
             entity.HasIndex(e => e.NormalizedName, "RoleNameIndex")
@@ -114,6 +110,9 @@ public partial class AuthContext : DbContext
         {
             entity.HasIndex(e => e.IdFeedBack, "IX_Boats_idFeedBack");
 
+            entity.Property(e => e.BoatType)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Description)
                 .HasMaxLength(50)
                 .IsUnicode(false);
@@ -127,6 +126,10 @@ public partial class AuthContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+
+            entity.HasOne(d => d.User).WithMany(p => p.Boats)
+                .HasForeignKey(d => d.UserId)
+                .HasConstraintName("FK_Boats_Boats");
         });
 
         modelBuilder.Entity<Chat>(entity =>
@@ -135,6 +138,19 @@ public partial class AuthContext : DbContext
 
             entity.Property(e => e.Date).HasColumnType("date");
             entity.Property(e => e.Message)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<ChatMessage>(entity =>
+        {
+            entity.ToTable("ChatMessage");
+
+            entity.Property(e => e.Message)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Timestamp).HasColumnType("date");
+            entity.Property(e => e.User)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
@@ -169,8 +185,15 @@ public partial class AuthContext : DbContext
 
             entity.HasIndex(e => e.IdChat, "IX_User_IdChat");
 
-            entity.HasIndex(e => e.IdRole, "IX_User_IdRole");
-
+            entity.Property(e => e.Avatar)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
+            entity.Property(e => e.City)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Country)
+                .HasMaxLength(50)
+                .IsUnicode(false);
             entity.Property(e => e.Email)
                 .HasMaxLength(50)
                 .IsUnicode(false)
@@ -183,6 +206,16 @@ public partial class AuthContext : DbContext
                 .HasMaxLength(50)
                 .IsUnicode(false)
                 .HasColumnName("password");
+            entity.Property(e => e.PhoneNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.StreetAddress)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdRoleNavigation).WithMany(p => p.Users)
+                .HasForeignKey(d => d.IdRole)
+                .HasConstraintName("FK_User_Role");
         });
 
         OnModelCreatingPartial(modelBuilder);

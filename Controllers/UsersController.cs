@@ -155,29 +155,92 @@ namespace TestApi.Controllers
 
         }
 
+        [HttpPut("/updateAvatarImage/{userId}")]
+        public async Task<IActionResult> UpdateAvatarImage(int userId, IFormFile file)
+        {
+            try
+            {
+                if (file == null || file.Length == 0)
+                    return BadRequest("File is null or empty.");
+
+                var avatar = await _UserRepository.UploadImageAsync(file);
+                avatar = avatar.Replace("wwwroot", "");
+                avatar = "/" + avatar;
+                var user = await _UserRepository.GetByIdAsync(userId);
+                if (user != null)
+                {
+                    user.Avatar = avatar;
+                    await _UserRepository.UpdateUser(user);
+                }
+                else
+                {
+                    return NotFound("user not found.");
+                }
+
+                return Ok(new { user, avatar });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+        // DELETE: api/User
+        /* [HttpDelete("{id}")]
+         public async Task<IActionResult> DeleteUser(int id)
+         {
+             try
+             {
+                 if (id <= 0)
+                 {
+                     return BadRequest();
+                 }
+                 bool result = await _UserRepository.DeleteUser(id);
+                 if (!result)
+                 {
+                     return NotFound();
+                 }
+                 return NoContent();
+             }
+             catch
+             {
+                 return Problem();
+             }
+         }*/
 
         // DELETE: api/User
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<bool> DeleteUser(int id)
         {
             try
             {
                 if (id <= 0)
                 {
-                    return BadRequest();
+                    return false;
                 }
-                bool result = await _UserRepository.DeleteUser(id);
-                if (!result)
+
+                var user = await _UserRepository.GetByIdUser(id);
+
+                if (user == null)
                 {
-                    return NotFound();
+                    return false; // User not found
                 }
-                return NoContent();
+
+                user.Active = 0; 
+
+                await _UserRepository.SaveChangesAsync();
+
+                return true;
             }
-            catch
+            catch (Exception e)
             {
-                return Problem();
+                Console.WriteLine(e);
+                return false;
             }
         }
+
 
     }
 }

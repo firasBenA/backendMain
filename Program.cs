@@ -8,12 +8,20 @@ global using System.Text;
 global using Microsoft.Extensions.Configuration;
 using TestApi.Configurations;
 using Microsoft.AspNetCore.Identity;
-using TestApi.Entities;
 using TestApi.Helpers;
 using API.FileProcessing.Service;
+using JwtAuthAspNet7WebAPI.Core.DbContext;
+using JwtAuthAspNet7WebAPI.Core.Entities;
 
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    var connectionString = builder.Configuration.GetConnectionString("local");
+    options.UseSqlServer(connectionString);
+});
+
 
 // Add services to the container.
 builder.Services.AddDbContextPool<AuthContext>(options =>
@@ -27,6 +35,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBoatRepository, BoatRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IManageImage, ManageImage>();
+builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
@@ -62,7 +71,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddJwtBearer(jwt =>
 {
-    var secret = builder.Configuration.GetSection("Jwt:Key").Value;
+    var secret = builder.Configuration.GetSection("JWT:Key").Value;
     if (string.IsNullOrEmpty(secret))
     {
         throw new InvalidOperationException("JWT secret is missing or empty in appsettings.json.");
@@ -96,6 +105,15 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 
 }
+
+app.UseHttpsRedirection();
+app.UseRouting();
+
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers();
+});
+
 app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();

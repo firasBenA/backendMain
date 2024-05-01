@@ -179,11 +179,11 @@
           }
         }
       },
-      "Microsoft.AspNetCore.Identity.EntityFrameworkCore/7.0.0": {
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore/7.0.4": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Relational": "7.0.0",
-          "Microsoft.Extensions.Identity.Stores": "7.0.0"
+          "Microsoft.EntityFrameworkCore.Relational": "7.0.4",
+          "Microsoft.Extensions.Identity.Stores": "7.0.4"
         },
         "compile": {
           "lib/net7.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll": {
@@ -417,10 +417,10 @@
           }
         }
       },
-      "Microsoft.EntityFrameworkCore.Tools/7.0.4": {
+      "Microsoft.EntityFrameworkCore.Tools/7.0.16": {
         "type": "package",
         "dependencies": {
-          "Microsoft.EntityFrameworkCore.Design": "7.0.4"
+          "Microsoft.EntityFrameworkCore.Design": "7.0.16"
         },
         "compile": {
           "lib/net6.0/_._": {}
@@ -1650,10 +1650,10 @@
         "microsoft.aspnetcore.http.features.nuspec"
       ]
     },
-    "Microsoft.AspNetCore.Identity.EntityFrameworkCore/7.0.0": {
-      "sha512": "mtomuG24wGpvdblVQUj/JHIZ1i8oNhRNHr0V0re8fTkv15hz+AQLdtwbdd6FdINNeXiKi3kGmzZ7PE1KOyzoSg==",
+    "Microsoft.AspNetCore.Identity.EntityFrameworkCore/7.0.4": {
+      "sha512": "qs/wCiLjxedv5SByDwBBr60FsKHqFhDMe1tsuOP5FF3rA7/sue37bYFdSLpnkOIOnpwnMv8++T132+E1aipnPw==",
       "type": "package",
-      "path": "microsoft.aspnetcore.identity.entityframeworkcore/7.0.0",
+      "path": "microsoft.aspnetcore.identity.entityframeworkcore/7.0.4",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -1661,7 +1661,7 @@
         "THIRD-PARTY-NOTICES.TXT",
         "lib/net7.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.dll",
         "lib/net7.0/Microsoft.AspNetCore.Identity.EntityFrameworkCore.xml",
-        "microsoft.aspnetcore.identity.entityframeworkcore.7.0.0.nupkg.sha512",
+        "microsoft.aspnetcore.identity.entityframeworkcore.7.0.4.nupkg.sha512",
         "microsoft.aspnetcore.identity.entityframeworkcore.nuspec"
       ]
     },
@@ -1986,17 +1986,17 @@
         "microsoft.entityframeworkcore.sqlserver.nuspec"
       ]
     },
-    "Microsoft.EntityFrameworkCore.Tools/7.0.4": {
-      "sha512": "58hDB+ENGisuSjJBl1RBHL9qzFJTukFSQFl/wCU8/3ApcOH/rPrRG4PWThiJTmfHRmh8H8HExdYbtkv7wa7BLg==",
+    "Microsoft.EntityFrameworkCore.Tools/7.0.16": {
+      "sha512": "ZqBGxy8X1877dnGMVwmLzuMhZz8IstuX5QfUoKiQGIGRYV4r2YvxZX3oLw9BvyMZBgtm95dcW6Bev0gerKRNfA==",
       "type": "package",
-      "path": "microsoft.entityframeworkcore.tools/7.0.4",
+      "path": "microsoft.entityframeworkcore.tools/7.0.16",
       "hasTools": true,
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
         "Icon.png",
         "lib/net6.0/_._",
-        "microsoft.entityframeworkcore.tools.7.0.4.nupkg.sha512",
+        "microsoft.entityframeworkcore.tools.7.0.16.nupkg.sha512",
         "microsoft.entityframeworkcore.tools.nuspec",
         "tools/EntityFrameworkCore.PS2.psd1",
         "tools/EntityFrameworkCore.PS2.psm1",
@@ -4442,13 +4442,13 @@
     "net7.0": [
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 7.0.4",
       "Microsoft.AspNetCore.Cors >= 2.2.0",
-      "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 7.0.0",
+      "Microsoft.AspNetCore.Identity.EntityFrameworkCore >= 7.0.4",
       "Microsoft.AspNetCore.Identity.UI >= 7.0.16",
       "Microsoft.AspNetCore.OpenApi >= 7.0.16",
       "Microsoft.EntityFrameworkCore >= 7.0.16",
       "Microsoft.EntityFrameworkCore.Design >= 7.0.16",
       "Microsoft.EntityFrameworkCore.SqlServer >= 7.0.4",
-      "Microsoft.EntityFrameworkCore.Tools >= 7.0.4",
+      "Microsoft.EntityFrameworkCore.Tools >= 7.0.16",
       "Swashbuckle.AspNetCore >= 6.5.0",
       "System.IdentityModel.Tokens.Jwt >= 7.4.1"
     ]
@@ -4500,7 +4500,7 @@
           },
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": {
             "target": "Package",
-            "version": "[7.0.0, )"
+            "version": "[7.0.4, )"
           },
           "Microsoft.AspNetCore.Identity.UI": {
             "target": "Package",
@@ -4528,7 +4528,7 @@
             "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
             "suppressParent": "All",
             "target": "Package",
-            "version": "[7.0.4, )"
+            "version": "[7.0.16, )"
           },
           "Swashbuckle.AspNetCore": {
             "target": "Package",
@@ -4558,7 +4558,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.406\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.408\\RuntimeIdentifierGraph.json"
       }
     }
   }

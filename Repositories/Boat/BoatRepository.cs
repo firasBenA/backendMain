@@ -18,7 +18,7 @@ namespace TestApi.Repositories
         {
             _context = context;
         }
-        
+
         public async Task<List<Boat>?> GetAllBoats()
         {
             try
@@ -53,6 +53,10 @@ namespace TestApi.Repositories
             }
         }
 
+        public async Task<List<Boat>> GetAllBoatsByUserId(int userId)
+        {
+            return await _context.Boats.Where(b => b.UserId == userId).ToListAsync();
+        }
         public async Task<Boat> GetByIdAsync(int id)
         {
             return await _context.Boats.FirstOrDefaultAsync(u => u.Id == id);
@@ -65,13 +69,13 @@ namespace TestApi.Repositories
                 var fileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
 
 
-                
-                var filePath = Path.Combine("wwwroot/images/", fileName); 
+
+                var filePath = Path.Combine("wwwroot/images/", fileName);
 
                 using (var stream = new FileStream(filePath, FileMode.Create))
                 {
                     await file.CopyToAsync(stream);
-                    
+
                 }
 
                 return filePath;

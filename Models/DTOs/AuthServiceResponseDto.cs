@@ -1,4 +1,4 @@
-﻿namespace TestApi.Models.Dtos
+﻿namespace JwtAuthAspNet7WebAPI.Core.Dtos
 {
     public class AuthServiceResponseDto
     {
