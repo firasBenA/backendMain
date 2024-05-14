@@ -11,5 +11,8 @@ namespace TestApi.Repositories
         Task AddFeedBackAsync(FeedBack feedBack);
         Task UpdateFeedBackAsync(FeedBack feedBack);
         Task DeleteFeedBackAsync(int id);
+        Task<double> CalculateAverageRatingAsync();
+        Task<List<FeedBack>> GetFeedbacksByBoatId(int boatId);
+
     }
 }

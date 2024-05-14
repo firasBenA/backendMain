@@ -12,17 +12,30 @@ using TestApi.Helpers;
 using API.FileProcessing.Service;
 using JwtAuthAspNet7WebAPI.Core.DbContext;
 using JwtAuthAspNet7WebAPI.Core.Entities;
+using Braintree;
+using Microsoft.AspNetCore.Hosting;
+using System.Collections.Concurrent;
+using System.Net.WebSockets;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    var connectionString = builder.Configuration.GetConnectionString("local");
+    var connectionString = builder.Configuration.GetConnectionString("ConnectionString");
     options.UseSqlServer(connectionString);
 });
 
-
+builder.Services.AddSingleton<IBraintreeGateway>(provider =>
+        {
+            return new BraintreeGateway
+            {
+                Environment = Braintree.Environment.SANDBOX,
+                MerchantId = "q5g7crgx9xvybygy",
+                PublicKey = "bjz6c3qw27fwvwjr",
+                PrivateKey = "YourPrivateKey"
+            };
+        });
 // Add services to the container.
 builder.Services.AddDbContextPool<AuthContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("ConnectionString")));
@@ -36,6 +49,11 @@ builder.Services.AddScoped<IBoatRepository, BoatRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IManageImage, ManageImage>();
 builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
+builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
+builder.Services.AddScoped<IFeedBackRepository, FeedBackRepository>();
+builder.Services.AddScoped<ICardRepository, CardRepository>();
+
 
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));

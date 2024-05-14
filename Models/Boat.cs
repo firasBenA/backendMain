@@ -31,5 +31,11 @@ public partial class Boat
 
     public string? BoatType { get; set; }
 
-    public virtual User? User { get; set; }
+    public string? Country { get; set; }
+
+    public string? City { get; set; }
+
+    public virtual ICollection<Equipment> Equipment { get; set; } = new List<Equipment>();
+
+    public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
 }

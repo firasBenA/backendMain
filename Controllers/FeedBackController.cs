@@ -60,5 +60,25 @@ namespace TestApi.Controllers
             await _feedBackRepository.DeleteFeedBackAsync(id);
             return NoContent();
         }
+        
+        [HttpGet("average")]
+        public async Task<ActionResult<double>> GetAverageRating()
+        {
+            var averageRating = await _feedBackRepository.CalculateAverageRatingAsync();
+            return Ok(averageRating);
+        }
+
+        [HttpGet("ByBoatId/{boatId}")]
+        public async Task<ActionResult<IEnumerable<FeedBack>>> GetFeedbacksByBoatId(int boatId)
+        {
+            var feedbacks = await _feedBackRepository.GetFeedbacksByBoatId(boatId);
+
+            if (feedbacks == null || feedbacks.Count == 0)
+            {
+                return NotFound();
+            }
+
+            return Ok(feedbacks);
+        }
     }
 }

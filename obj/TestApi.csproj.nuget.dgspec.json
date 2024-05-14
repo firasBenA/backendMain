@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\TestApi.csproj": {}
+    "C:\\Users\\moham\\teletravailBackend-main\\TestApi.csproj": {}
   },
   "projects": {
-    "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\TestApi.csproj": {
+    "C:\\Users\\moham\\teletravailBackend-main\\TestApi.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\TestApi.csproj",
+        "projectUniqueName": "C:\\Users\\moham\\teletravailBackend-main\\TestApi.csproj",
         "projectName": "TestApi",
-        "projectPath": "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\TestApi.csproj",
+        "projectPath": "C:\\Users\\moham\\teletravailBackend-main\\TestApi.csproj",
         "packagesPath": "C:\\Users\\moham\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\moham\\Downloads\\teletravailBackend-main\\teletravailBackend-main\\obj\\",
+        "outputPath": "C:\\Users\\moham\\teletravailBackend-main\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\moham\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -38,6 +38,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "Braintree": {
+              "target": "Package",
+              "version": "[5.25.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.Google": {
+              "target": "Package",
+              "version": "[5.0.14, )"
+            },
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[7.0.4, )"

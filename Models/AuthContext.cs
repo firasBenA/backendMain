@@ -7,6 +7,7 @@ namespace TestApi.Models;
 public partial class AuthContext : DbContext
 {
     
+
     public AuthContext(DbContextOptions<AuthContext> options)
         : base(options)
     {
@@ -26,16 +27,25 @@ public partial class AuthContext : DbContext
 
     public virtual DbSet<Boat> Boats { get; set; }
 
+    public virtual DbSet<CardDetail> CardDetails { get; set; }
+
     public virtual DbSet<Chat> Chats { get; set; }
 
     public virtual DbSet<ChatMessage> ChatMessages { get; set; }
 
+    public virtual DbSet<Email> Emails { get; set; }
+
+    public virtual DbSet<Equipment> Equipments { get; set; }
+
     public virtual DbSet<FeedBack> FeedBacks { get; set; }
+
+    public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
+   
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AspNetRole>(entity =>
@@ -113,8 +123,16 @@ public partial class AuthContext : DbContext
             entity.Property(e => e.BoatType)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Description)
+            entity.Property(e => e.City)
                 .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("city");
+            entity.Property(e => e.Country)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("country");
+            entity.Property(e => e.Description)
+                .HasMaxLength(2000)
                 .IsUnicode(false);
             entity.Property(e => e.IdFeedBack).HasColumnName("idFeedBack");
             entity.Property(e => e.ImageUrl)
@@ -126,10 +144,25 @@ public partial class AuthContext : DbContext
             entity.Property(e => e.Type)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
 
-            entity.HasOne(d => d.User).WithMany(p => p.Boats)
-                .HasForeignKey(d => d.UserId)
-                .HasConstraintName("FK_Boats_Boats");
+        modelBuilder.Entity<CardDetail>(entity =>
+        {
+            entity.HasNoKey();
+
+            entity.Property(e => e.CardNumber)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Cvv)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("CVV");
+            entity.Property(e => e.ExpiryMonth)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.ExpiryYear)
+                .HasMaxLength(50)
+                .IsUnicode(false);
         });
 
         modelBuilder.Entity<Chat>(entity =>
@@ -144,15 +177,42 @@ public partial class AuthContext : DbContext
 
         modelBuilder.Entity<ChatMessage>(entity =>
         {
-            entity.ToTable("ChatMessage");
+            entity
+                .HasNoKey()
+                .ToTable("ChatMessage");
 
             entity.Property(e => e.Message)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            entity.Property(e => e.Timestamp).HasColumnType("date");
-            entity.Property(e => e.User)
+            entity.Property(e => e.Sender)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Email>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("Email");
+
+            entity.Property(e => e.Body)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Subject)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.To)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Equipment>(entity =>
+        {
+            entity.Property(e => e.Gps).HasColumnName("GPS");
+
+            entity.HasOne(d => d.IdBoatNavigation).WithMany(p => p.Equipment)
+                .HasForeignKey(d => d.IdBoat)
+                .HasConstraintName("FK_Equipments_Boats");
         });
 
         modelBuilder.Entity<FeedBack>(entity =>
@@ -162,8 +222,32 @@ public partial class AuthContext : DbContext
             entity.ToTable("FeedBack");
 
             entity.Property(e => e.Comment)
+                .HasMaxLength(1000)
+                .IsUnicode(false);
+
+            entity.HasOne(d => d.IdUserNavigation).WithMany(p => p.FeedBacks)
+                .HasForeignKey(d => d.IdUser)
+                .HasConstraintName("FK_FeedBack_Boats");
+        });
+
+        modelBuilder.Entity<Reservation>(entity =>
+        {
+            entity.ToTable("Reservation");
+
+            entity.Property(e => e.DateDebut)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            entity.Property(e => e.DateFin)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.RéservantName)
+                .HasMaxLength(50)
+                .IsUnicode(false)
+                .HasColumnName("réservantName");
+
+            entity.HasOne(d => d.IdBoatNavigation).WithMany(p => p.Reservations)
+                .HasForeignKey(d => d.IdBoat)
+                .HasConstraintName("FK_Reservation_Boats");
         });
 
         modelBuilder.Entity<Role>(entity =>

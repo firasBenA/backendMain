@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using TestApi.Models;
 
 
 public class ChatMessageRepository : IChatMessageRepository
@@ -10,6 +11,7 @@ public class ChatMessageRepository : IChatMessageRepository
     public ChatMessageRepository(AuthContext context)
     {
         _context = context;
+        
     }
 
     public async Task SendMessage(string message)

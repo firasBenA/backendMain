@@ -42,5 +42,19 @@ namespace TestApi.Repositories
             _context.FeedBacks.Remove(feedBack);
             await _context.SaveChangesAsync();
         }
+
+        public async Task<double> CalculateAverageRatingAsync()
+        {
+            var averageRating = await _context.FeedBacks
+                .Where(f => f.Rating != null)
+                .AverageAsync(f => f.Rating.Value);
+            return averageRating;
+        }
+         public async Task<List<FeedBack>> GetFeedbacksByBoatId(int boatId)
+        {
+            return await _context.FeedBacks
+                .Where(f => f.IdBoat == boatId)
+                .ToListAsync();
+        }
     }
 }

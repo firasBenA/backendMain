@@ -31,7 +31,7 @@ public partial class User
 
     public int? Active { get; set; }
 
-    public virtual ICollection<Boat> Boats { get; set; } = new List<Boat>();
+    public virtual ICollection<FeedBack> FeedBacks { get; set; } = new List<FeedBack>();
 
     public virtual Role? IdRoleNavigation { get; set; }
 }

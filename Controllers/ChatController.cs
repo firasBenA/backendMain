@@ -1,24 +1,27 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using System.Threading.Tasks;
 
-namespace SignalRIntro.Api.Controllers
+namespace YourNamespace.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     public class ChatController : ControllerBase
     {
-        private readonly IChatMessageRepository _chatMessageRepository;
+        private readonly IHubContext<ChatHub> _chatHubContext;
 
-        public ChatController(IChatMessageRepository chatMessageRepository)
+        public ChatController(IHubContext<ChatHub> chatHubContext)
         {
-            _chatMessageRepository = chatMessageRepository;
+            _chatHubContext = chatHubContext;
         }
 
-        [HttpPost]
-        public async Task<IActionResult> SendMessage(string message)
+        [HttpPost("SendMessage")]
+        public async Task<IActionResult> SendMessage([FromBody] ChatMessage message)
         {
-            await _chatMessageRepository.SendMessage(message);
-            return NoContent();
+            // Process the message and send it to clients
+            await _chatHubContext.Clients.All.SendAsync("ReceiveMessage", message.Sender, message.Message);
+
+            return Ok();
         }
     }
 }

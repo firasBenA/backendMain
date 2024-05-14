@@ -1,6 +1,6 @@
 ﻿using JwtAuthAspNet7WebAPI.Core.Dtos;
 using Microsoft.AspNetCore.Mvc;
-
+using TestApi.Repositories;
 
 namespace TestApi.Controllers
 {
