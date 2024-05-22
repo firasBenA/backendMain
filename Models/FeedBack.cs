@@ -15,5 +15,7 @@ public partial class FeedBack
 
     public int? IdUser { get; set; }
 
+    public double? Avg { get; set; }
+
     public virtual User? IdUserNavigation { get; set; }
 }

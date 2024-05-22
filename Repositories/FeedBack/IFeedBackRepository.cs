@@ -13,6 +13,8 @@ namespace TestApi.Repositories
         Task DeleteFeedBackAsync(int id);
         Task<double> CalculateAverageRatingAsync();
         Task<List<FeedBack>> GetFeedbacksByBoatId(int boatId);
+        Task<double?> GetAverageRatingByBoatIdAsync(int boatId);
+        Task<FeedBack> GetFeedbackByUserAndBoatIdAsync(int userId, int boatId);
 
     }
 }

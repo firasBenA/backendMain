@@ -336,3 +336,9 @@ C:\Users\moham\teletravailBackend-main\obj\Debug\net7.0\ref\TestApi.dll
 C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\Braintree.dll
 C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\Newtonsoft.Json.dll
 C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\System.Xml.XPath.XmlDocument.dll
+C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\MailKit.dll
+C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\MimeKit.dll
+C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\System.Formats.Asn1.dll
+C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\System.Security.Cryptography.Pkcs.dll
+C:\Users\moham\teletravailBackend-main\bin\Debug\net7.0\runtimes\win\lib\net7.0\System.Security.Cryptography.Pkcs.dll

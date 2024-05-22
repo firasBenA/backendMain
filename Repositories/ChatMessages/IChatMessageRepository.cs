@@ -1,7 +1,13 @@
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using TestApi.Models;
 
-public interface IChatMessageRepository
+namespace TestApi.Repositories
 {
-    Task SendMessage(string message);
+    public interface IChatMessageRepository
+    {
+        IEnumerable<ChatMessage> GetMessages();
+        void AddMessage(ChatMessage message);
+        Task<IEnumerable<ChatMessage>> GetMessagesAsync(int userId1, int userId2);
+
+    }
 }

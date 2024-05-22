@@ -50,11 +50,29 @@ namespace TestApi.Repositories
                 .AverageAsync(f => f.Rating.Value);
             return averageRating;
         }
-         public async Task<List<FeedBack>> GetFeedbacksByBoatId(int boatId)
+        public async Task<List<FeedBack>> GetFeedbacksByBoatId(int boatId)
         {
             return await _context.FeedBacks
                 .Where(f => f.IdBoat == boatId)
                 .ToListAsync();
+        }
+    
+
+        public async Task<double?> GetAverageRatingByBoatIdAsync(int boatId)
+        {
+            var averageRating = await _context.FeedBacks
+                .Where(f => f.IdBoat == boatId && f.Rating.HasValue)
+                .AverageAsync(f => f.Rating);
+
+            return averageRating;
+
+
+        }
+
+        public async Task<FeedBack> GetFeedbackByUserAndBoatIdAsync(int userId, int boatId)
+        {
+            return await _context.FeedBacks
+                .FirstOrDefaultAsync(f => f.IdUser == userId && f.IdBoat == boatId);
         }
     }
 }

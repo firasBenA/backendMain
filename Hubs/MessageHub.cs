@@ -1,20 +1,42 @@
-﻿// Hubs/ChatHub.cs
+﻿// ChatHub.cs
 using Microsoft.AspNetCore.SignalR;
+using System;
 using System.Threading.Tasks;
-
-public class ChatHub : Hub
+namespace PrivateChatApp.Hubs
 {
-    private readonly IRepository<ChatMessage> _repository;
-
-    public ChatHub(IRepository<ChatMessage> repository)
+    public class ChatHub : Hub
     {
-        _repository = repository;
-    }
+        private readonly IUserRepository _userRepository;
+        private readonly IChatMessageRepository _messageRepository;
 
-    public async Task SendMessage(string user, string message)
-    {
-        var chatMessage = new ChatMessage { Sender = user, Message = message };
-        _repository.Add(chatMessage);
-        await Clients.All.SendAsync("ReceiveMessage", chatMessage);
+        public ChatHub(IUserRepository userRepository, IChatMessageRepository messageRepository)
+        {
+            _userRepository = userRepository;
+            _messageRepository = messageRepository;
+        }
+
+        public async Task SendMessage(int receiverUserId, string message)
+        {
+            var senderUserId = Context.UserIdentifier;
+            var receiver = await _userRepository.GetByIdAsync(receiverUserId);
+
+            if (receiver != null)
+            {
+                var newMessage = new ChatMessage
+                {
+                    IdSender = int.Parse(senderUserId), 
+                    Message = message,
+                    IdReciver = receiverUserId,
+                    CreatedAt = DateTime.UtcNow.ToString()
+                };
+                _messageRepository.AddMessage(newMessage);
+
+                await Clients.User(receiver.Id.ToString()).SendAsync("ReceiveMessage", senderUserId, message);
+            }
+            else
+            {
+                throw new ArgumentException("Receiver not found.");
+            }
+        }
     }
 }

@@ -16,6 +16,10 @@ using Braintree;
 using Microsoft.AspNetCore.Hosting;
 using System.Collections.Concurrent;
 using System.Net.WebSockets;
+using ConversationApi.Repositories;
+using UserConversationApi.Repositories;
+using EmailApi.Repositories;
+using PrivateChatApp.Hubs;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,7 +37,7 @@ builder.Services.AddSingleton<IBraintreeGateway>(provider =>
                 Environment = Braintree.Environment.SANDBOX,
                 MerchantId = "q5g7crgx9xvybygy",
                 PublicKey = "bjz6c3qw27fwvwjr",
-                PrivateKey = "YourPrivateKey"
+                PrivateKey = "05d4d682103f51947bca38f69132955a"
             };
         });
 // Add services to the container.
@@ -48,12 +52,23 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBoatRepository, BoatRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IManageImage, ManageImage>();
-builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
+builder.Services.AddScoped<IChatMessageRepository, ChatMessagesRepository>();
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IFeedBackRepository, FeedBackRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IUserConversationRepository, UserConversationRepository>();
+builder.Services.AddTransient<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<EmailService>();
 
+
+
+
+
+builder.Services.AddSignalR();
 
 
 builder.Services.Configure<JwtConfig>(builder.Configuration.GetSection("JwtConfig"));
@@ -63,8 +78,8 @@ builder.Services.AddCors(options =>
     options.AddDefaultPolicy(builder =>
     {
         builder.AllowAnyOrigin()
-               .AllowAnyMethod()
-               .AllowAnyHeader();
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -130,6 +145,7 @@ app.UseRouting();
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
+    endpoints.MapHub<ChatHub>("chatHub"); // Map SignalR hub endpoint
 });
 
 app.UseStaticFiles();
@@ -138,5 +154,6 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 
 app.Run();

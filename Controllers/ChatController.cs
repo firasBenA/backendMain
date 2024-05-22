@@ -1,27 +1,47 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using TestApi.Models;
+using TestApi.Repositories;
 
-namespace YourNamespace.Controllers
+namespace TestApi.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     public class ChatController : ControllerBase
     {
-        private readonly IHubContext<ChatHub> _chatHubContext;
+        private readonly IChatMessageRepository _chatMessageRepository;
 
-        public ChatController(IHubContext<ChatHub> chatHubContext)
+        public ChatController(IChatMessageRepository chatMessageRepository)
         {
-            _chatHubContext = chatHubContext;
+            _chatMessageRepository = chatMessageRepository;
         }
 
-        [HttpPost("SendMessage")]
-        public async Task<IActionResult> SendMessage([FromBody] ChatMessage message)
+        /*[HttpGet("messages")]
+        public ActionResult<IEnumerable<ChatMessage>> GetMessages(int userId1, int userId2)
         {
-            // Process the message and send it to clients
-            await _chatHubContext.Clients.All.SendAsync("ReceiveMessage", message.Sender, message.Message);
+            var messages = _chatMessageRepository.GetMessages(userId1, userId2);
+            return Ok(messages);
+        }*/
 
-            return Ok();
+        [HttpPost("messages")]
+        public ActionResult AddMessage([FromBody] ChatMessage message)
+        {
+            if (message == null)
+            {
+                return BadRequest("Message cannot be null");
+            }
+
+            _chatMessageRepository.AddMessage(message);
+            return Ok(message);
         }
+
+        [HttpGet("{userId1}/{userId2}")]
+        public async Task<IActionResult> GetMessages(int userId1, int userId2)
+        {
+            var messages = await _chatMessageRepository.GetMessagesAsync(userId1, userId2);
+            return Ok(messages);
+        }
+
+       
     }
 }

@@ -1,53 +1,46 @@
-using System;
 using System.Net;
 using System.Net.Mail;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace EmailApi.Repositories
 {
     public class EmailRepository : IEmailRepository
     {
-        private readonly string _smtpHost;
-        private readonly int _smtpPort;
-        private readonly string _smtpUsername;
-        private readonly string _smtpPassword;
+        private readonly IConfiguration _configuration;
 
-        public EmailRepository(string smtpHost, int smtpPort, string smtpUsername, string smtpPassword)
+        public EmailRepository(IConfiguration configuration)
         {
-            _smtpHost = smtpHost;
-            _smtpPort = smtpPort;
-            _smtpUsername = smtpUsername;
-            _smtpPassword = smtpPassword;
+            _configuration = configuration;
         }
 
         public async Task SendEmailAsync(string to, string subject, string body)
         {
-            try
+            var smtpClient = new SmtpClient(_configuration["Email:SmtpServer"])
             {
-                // Configure SMTP client
-                using (SmtpClient client = new SmtpClient(_smtpHost))
-                {
-                    client.Port = _smtpPort;
-                    client.Credentials = new NetworkCredential(_smtpUsername, _smtpPassword);
-                    client.EnableSsl = true;
+                Port = int.Parse(_configuration["Email:Port"]),
+                Credentials = new NetworkCredential(_configuration["Email:FromEmail"], _configuration["Email:Password"]),
+                EnableSsl = true,
+            };
 
-                    // Prepare email message
-                    using (MailMessage mailMessage = new MailMessage())
-                    {
-                        mailMessage.From = new MailAddress(_smtpUsername);
-                        mailMessage.To.Add(to);
-                        mailMessage.Subject = subject;
-                        mailMessage.Body = body;
-
-                        // Send email
-                        await client.SendMailAsync(mailMessage);
-                    }
-                }
-            }
-            catch (Exception ex)
+            var mailMessage = new MailMessage
             {
-                throw new Exception($"Error sending email: {ex.Message}");
-            }
+                From = new MailAddress(_configuration["Email:FromEmail"]),
+                Subject = subject,
+                Body = body,
+                IsBodyHtml = true,
+            };
+
+            mailMessage.To.Add(to);
+
+            await smtpClient.SendMailAsync(mailMessage);
+        }
+
+        public async Task SendVerificationEmailAsync(string to, string verificationCode)
+        {
+            var subject = "Email Verification";
+            var body = $"Your verification code is: {verificationCode}";
+            await SendEmailAsync(to, subject, body);
         }
     }
 }

@@ -8,6 +8,8 @@ using TestApi.Repositories;
 using Microsoft.Extensions.Configuration;
 using System.Security.Claims;
 using TestApi.Helpers;
+using Microsoft.AspNetCore.Identity;
+using EmailApi.Repositories;
 
 
 namespace TestApi.Controllers
@@ -18,34 +20,113 @@ namespace TestApi.Controllers
     {
         private readonly IUserRepository _UserRepository;
         private readonly JwtService _jwtService;
+        private readonly IEmailRepository _emailRepository;
 
 
-        public UserController(IUserRepository UserRepository, JwtService jwtService)
+
+        public UserController(IUserRepository UserRepository, JwtService jwtService, IEmailRepository emailRepository)
         {
             _UserRepository = UserRepository;
             _jwtService = jwtService;
+            _emailRepository = emailRepository;
 
+        }
+
+        private string GenerateVerificationCode()
+        {
+            var random = new Random();
+            return random.Next(1000, 9999).ToString();
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> AddUser(User user)
+        {
+            try
+            {
+                if (user == null)
+                {
+                    return BadRequest();
+                }
+
+                var hashedPassword = new PasswordHasher<User>().HashPassword(user, user.Password);
+                user.Password = hashedPassword;
+
+                user.Active = 0; // Set to inactive initially
+                user.DateInscription = DateTime.UtcNow;
+
+                var verificationCode = GenerateVerificationCode();
+                user.VerificationCode = verificationCode;
+
+                bool res = await _UserRepository.AddUser(user);
+
+                await _emailRepository.SendVerificationEmailAsync(user.Email, verificationCode);
+
+                return Ok(new { res, HashedPassword = hashedPassword });
+            }
+            catch
+            {
+                return Problem();
+            }
+        }
+
+        [HttpPost("verify")]
+        public async Task<IActionResult> VerifyEmail([FromBody] EmailVerificationModel model)
+        {
+            var user = await _UserRepository.FindByEmailAsync(model.Email);
+
+            if (user == null || user.VerificationCode != model.VerificationCode)
+            {
+                return BadRequest("Invalid verification code.");
+            }
+
+            user.Active = 1; // Activate the user
+            user.VerificationCode = null; // Clear the verification code
+
+            await _UserRepository.UpdateUser(user);
+
+            return Ok("Email verified successfully!");
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] User user)
+        public async Task<IActionResult> Login([FromBody] User userLogin)
         {
-            var existingUser = _UserRepository.GetUserByUsernameAndPassword(user.Email, user.Password);
+            var existingUser = await _UserRepository.FindByEmailAsync(userLogin.Email);
 
             if (existingUser == null)
             {
-                return Unauthorized();
+                return Unauthorized(new { message = "Invalid email or password." });
             }
 
-            var jwt = _jwtService.Generate(user.Id);
+            // Compare the provided plain text password with the hashed password
+            var passwordVerificationResult = new PasswordHasher<User>().VerifyHashedPassword(existingUser, existingUser.Password, userLogin.Password);
 
+            if (passwordVerificationResult != PasswordVerificationResult.Success)
+            {
+                return Unauthorized(new { message = "Invalid email or password." });
+            }
+
+            // Generate JWT token
+            var jwt = _jwtService.Generate(existingUser.Id);
+
+            // Set JWT token in cookie
             Response.Cookies.Append("jwt", jwt, new CookieOptions
             {
-                HttpOnly = true
+                HttpOnly = true,
+                // Set other cookie options if needed (e.g., expiration)
             });
 
-            return Ok(new { user });
+            // Return only necessary user data (excluding sensitive info like password)
+            return Ok(new
+            {
+                existingUser,
+                userId = existingUser.Id,
+                email = existingUser.Email,
+                jwt
+            });
         }
+
+
+
 
         // GET: api/User/user
         [HttpGet("user")]
@@ -111,8 +192,8 @@ namespace TestApi.Controllers
         }
 
         // POST: api/User
-        [HttpPost]
-        public async Task<ActionResult> AddUser(User user)
+        /*[HttpPost]
+        public async Task<ActionResult> AddUsersssss(User user)
         {
 
             try
@@ -121,8 +202,15 @@ namespace TestApi.Controllers
                 {
                     return BadRequest();
                 }
+
+                var hashedPassword = new PasswordHasher<User>().HashPassword(user, user.Password);
+                user.Password = hashedPassword;
+
+                user.Active = 1;
+
+                user.DateInscription = DateTime.UtcNow;
                 bool res = await _UserRepository.AddUser(user);
-                return Ok(res);
+                return Ok(new { res, HashedPassword = hashedPassword });
             }
             catch
             {
@@ -131,7 +219,7 @@ namespace TestApi.Controllers
 
             /* var newUser = await _UserRepository.AddUser(user);
              return CreatedAtAction(nameof(AddUser), new { id = newUser.Id }, newUser);*/
-        }
+        //} //
 
         // PUT: api/User
         [HttpPut("{id}")]
@@ -228,7 +316,7 @@ namespace TestApi.Controllers
                     return false; // User not found
                 }
 
-                user.Active = 0; 
+                user.Active = 0;
 
                 await _UserRepository.SaveChangesAsync();
 

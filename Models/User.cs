@@ -31,7 +31,25 @@ public partial class User
 
     public int? Active { get; set; }
 
+    public string? ConnectionId { get; set; }
+
+    public string? VerificationToken { get; set; }
+
+    public bool? IsVerified { get; set; }
+
+    public DateTime? DateInscription { get; set; }
+
+    public string? Langue { get; set; }
+
+    public string? VerificationCode { get; set; }
+
+    public virtual ICollection<ChatMessage> ChatMessageIdReciverNavigations { get; set; } = new List<ChatMessage>();
+
+    public virtual ICollection<ChatMessage> ChatMessageIdSenderNavigations { get; set; } = new List<ChatMessage>();
+
     public virtual ICollection<FeedBack> FeedBacks { get; set; } = new List<FeedBack>();
 
     public virtual Role? IdRoleNavigation { get; set; }
+
+    public virtual ICollection<UserConversation> UserConversations { get; set; } = new List<UserConversation>();
 }

@@ -20,7 +20,7 @@ namespace TestApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetReservations()
         {
-            var reservations = await _reservationRepository.GetAllReservations();
+            var reservations = await _reservationRepository.GetReservationsAsync();
             return Ok(reservations);
         }
 
@@ -42,12 +42,31 @@ namespace TestApi.Controllers
             return Ok(reservations);
         }
 
-        [HttpPost]
+        /*[HttpPost]
         public async Task<ActionResult<Reservation>> CreateReservation(Reservation reservation)
         {
             await _reservationRepository.AddReservation(reservation);
             return CreatedAtAction(nameof(GetReservation), new { id = reservation.Id }, reservation);
+        }*/
+
+        [HttpPost]
+        public async Task<ActionResult<Reservation>> PostReservation(Reservation reservation)
+        {
+            if (reservation.StartDate == null || reservation.EndDate == null || reservation.IdBoat == null)
+            {
+                return BadRequest("Start date, end date, and boat ID are required.");
+            }
+
+            if (await _reservationRepository.ReservationExistsAsync(reservation.StartDate.Value, reservation.EndDate.Value, reservation.IdBoat.Value))
+            {
+                return BadRequest("The selected dates are already reserved for this boat.");
+            }
+
+            await _reservationRepository.AddReservationAsync(reservation);
+            return CreatedAtAction(nameof(GetReservations), new { id = reservation.Id }, reservation);
         }
+
+
 
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateReservation(int id, Reservation reservation)
@@ -80,6 +99,20 @@ namespace TestApi.Controllers
             await _reservationRepository.DeleteReservation(id);
 
             return NoContent();
+        }
+
+        [HttpGet("boat/{boatId}")]
+        public async Task<ActionResult<IEnumerable<Reservation>>> GetReservationsByBoatId(int boatId)
+        {
+            var reservations = await _reservationRepository.GetReservationsByBoatIdAsync(boatId);
+            return Ok(reservations);
+        }
+
+        [HttpGet("available")]
+        public async Task<ActionResult<IEnumerable<Boat>>> GetAvailableBoats(DateTime startDate, DateTime endDate, string city)
+        {
+            var availableBoats = await _reservationRepository.GetAvailableBoatsAsync(startDate, endDate, city);
+            return Ok(availableBoats);
         }
     }
 }

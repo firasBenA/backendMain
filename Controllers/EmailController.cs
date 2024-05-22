@@ -29,7 +29,8 @@ namespace EmailApi.Controllers
                 return StatusCode(500, $"Error sending email: {ex.Message}");
             }
         }
+        
     }
 
-    
+
 }

@@ -60,7 +60,7 @@ namespace TestApi.Controllers
             await _feedBackRepository.DeleteFeedBackAsync(id);
             return NoContent();
         }
-        
+
         [HttpGet("average")]
         public async Task<ActionResult<double>> GetAverageRating()
         {
@@ -79,6 +79,32 @@ namespace TestApi.Controllers
             }
 
             return Ok(feedbacks);
+        }
+
+        [HttpGet("AverageRatingByBoatId/{boatId}")]
+        public async Task<ActionResult<double?>> GetAverageRatingByBoatId(int boatId)
+        {
+            var averageRating = await _feedBackRepository.GetAverageRatingByBoatIdAsync(boatId);
+
+            if (averageRating == null)
+            {
+                return NotFound(); // Or return a custom response for no ratings found
+            }
+
+            return Ok(averageRating); // Returns the average rating
+        }
+
+        [HttpGet("ByUserAndBoatId/{userId}/{boatId}")]
+        public async Task<ActionResult<FeedBack>> GetFeedbackByUserAndBoatId(int userId, int boatId)
+        {
+            var feedback = await _feedBackRepository.GetFeedbackByUserAndBoatIdAsync(userId, boatId);
+
+            if (feedback == null)
+            {
+                return Ok(0); // Or return a custom response for no feedback found
+            }
+
+            return Ok(feedback); // Returns the existing feedback
         }
     }
 }

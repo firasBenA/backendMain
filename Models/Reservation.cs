@@ -19,5 +19,9 @@ public partial class Reservation
 
     public int? IdUser { get; set; }
 
+    public DateTime? StartDate { get; set; }
+
+    public DateTime? EndDate { get; set; }
+
     public virtual Boat? IdBoatNavigation { get; set; }
 }

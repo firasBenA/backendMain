@@ -45,6 +45,10 @@ namespace TestApi.Repositories
             }
         }
 
+        public async Task<User> GetUserByConnectionId(string connectionId)
+        {
+            return await _context.Users.FirstOrDefaultAsync(u => u.ConnectionId == connectionId);
+        }
         public async Task<User> GetByIdUser(int id)
         {
             try
@@ -63,6 +67,19 @@ namespace TestApi.Repositories
                 throw;
             }
         }
+
+        public async Task<User> FindByEmailAsync(string email)
+        {
+            try
+            {
+                return await _context.Users.SingleOrDefaultAsync(u => u.Email == email);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
 
         public async Task<User> GetByIdAsync(int id)
         {

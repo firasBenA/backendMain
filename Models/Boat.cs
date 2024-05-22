@@ -35,6 +35,8 @@ public partial class Boat
 
     public string? City { get; set; }
 
+    public double? AverageRating { get; set; }
+
     public virtual ICollection<Equipment> Equipment { get; set; } = new List<Equipment>();
 
     public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
