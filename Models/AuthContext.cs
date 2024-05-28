@@ -6,7 +6,7 @@ namespace TestApi.Models;
 
 public partial class AuthContext : DbContext
 {
-   
+    
 
     public AuthContext(DbContextOptions<AuthContext> options)
         : base(options)
@@ -43,15 +43,19 @@ public partial class AuthContext : DbContext
 
     public virtual DbSet<FeedBack> FeedBacks { get; set; }
 
+    public virtual DbSet<Message> Messages { get; set; }
+
     public virtual DbSet<Reservation> Reservations { get; set; }
 
     public virtual DbSet<Role> Roles { get; set; }
+
+    public virtual DbSet<Table1> Table1s { get; set; }
 
     public virtual DbSet<User> Users { get; set; }
 
     public virtual DbSet<UserConversation> UserConversations { get; set; }
 
-   
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<AspNetRole>(entity =>
@@ -199,9 +203,13 @@ public partial class AuthContext : DbContext
 
         modelBuilder.Entity<Conversation>(entity =>
         {
-            entity.Property(e => e.GroupName)
-                .HasMaxLength(50)
-                .IsUnicode(false);
+            entity.HasKey(e => e.Id).HasName("PK__Conversa__3214EC07C35CE911");
+
+            entity.ToTable("Conversation");
+
+            entity.HasOne(d => d.User2).WithMany(p => p.Conversations)
+                .HasForeignKey(d => d.User2Id)
+                .HasConstraintName("FK_Conversation_User2");
         });
 
         modelBuilder.Entity<Email>(entity =>
@@ -260,6 +268,20 @@ public partial class AuthContext : DbContext
                 .HasConstraintName("FK_FeedBack_Boats");
         });
 
+        modelBuilder.Entity<Message>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK__Message__3214EC078BAC0BE9");
+
+            entity.ToTable("Message");
+
+            entity.Property(e => e.SenderId).HasMaxLength(128);
+            entity.Property(e => e.Timestamp).HasColumnType("datetime");
+
+            entity.HasOne(d => d.Conversation).WithMany(p => p.Messages)
+                .HasForeignKey(d => d.ConversationId)
+                .HasConstraintName("FK_Message_Conversation");
+        });
+
         modelBuilder.Entity<Reservation>(entity =>
         {
             entity.ToTable("Reservation");
@@ -291,6 +313,26 @@ public partial class AuthContext : DbContext
             entity.ToTable("Role");
 
             entity.Property(e => e.RoleName)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+        });
+
+        modelBuilder.Entity<Table1>(entity =>
+        {
+            entity.HasKey(e => e.Id).HasName("PK_Table_1_1");
+
+            entity.ToTable("Table_1");
+
+            entity.Property(e => e.Conversation)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Sender)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.SenderId)
+                .HasMaxLength(50)
+                .IsUnicode(false);
+            entity.Property(e => e.Text)
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
@@ -354,10 +396,6 @@ public partial class AuthContext : DbContext
         modelBuilder.Entity<UserConversation>(entity =>
         {
             entity.Property(e => e.UserId).HasColumnName("UserID");
-
-            entity.HasOne(d => d.IdConversationNavigation).WithMany(p => p.UserConversations)
-                .HasForeignKey(d => d.IdConversation)
-                .HasConstraintName("FK_UserConversations_UserConversations");
 
             entity.HasOne(d => d.User).WithMany(p => p.UserConversations)
                 .HasForeignKey(d => d.UserId)

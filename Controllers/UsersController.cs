@@ -329,6 +329,65 @@ namespace TestApi.Controllers
             }
         }
 
+       
 
+        [HttpPut("{userId}/block")]
+        public async Task<IActionResult> BlockUser(int userId)
+        {
+            try
+            {
+                var user = await _UserRepository.GetByIdUser(userId);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (user.Active == 0)
+                {
+                    return BadRequest("User is already blocked.");
+                }
+
+                user.Active = 0; // Assuming 0 means blocked, adjust as per your logic
+                await _UserRepository.UpdateUser(user);
+
+                return Ok(new { message = "User blocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error blocking user: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPut("{userId}/unblock")]
+        public async Task<IActionResult> UnblockUser(int userId)
+        {
+            try
+            {
+                var user = await _UserRepository.GetByIdUser(userId);
+
+                if (user == null)
+                {
+                    return NotFound();
+                }
+
+                if (user.Active == 1)
+                {
+                    // User is already active
+                    return BadRequest("User is already active.");
+                }
+
+                user.Active = 1; // Assuming 1 means active, adjust as per your logic
+                await _UserRepository.UpdateUser(user);
+
+                return Ok(new { message = "User unblocked successfully." });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error unblocking user: {ex.Message}");
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

@@ -13,9 +13,6 @@ using API.FileProcessing.Service;
 using JwtAuthAspNet7WebAPI.Core.DbContext;
 using JwtAuthAspNet7WebAPI.Core.Entities;
 using Braintree;
-using Microsoft.AspNetCore.Hosting;
-using System.Collections.Concurrent;
-using System.Net.WebSockets;
 using ConversationApi.Repositories;
 using UserConversationApi.Repositories;
 using EmailApi.Repositories;
@@ -52,17 +49,21 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IBoatRepository, BoatRepository>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IManageImage, ManageImage>();
-builder.Services.AddScoped<IChatMessageRepository, ChatMessagesRepository>();
+builder.Services.AddScoped<IChatMessageRepository, ChatMessageRepository>();
 builder.Services.AddScoped<IEquipmentRepository, EquipmentRepository>();
 builder.Services.AddScoped<IReservationRepository, ReservationRepository>();
 builder.Services.AddScoped<IFeedBackRepository, FeedBackRepository>();
 builder.Services.AddScoped<ICardRepository, CardRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IUserConversationRepository, UserConversationRepository>();
 builder.Services.AddTransient<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<EmailService>();
+
+builder.Services.AddScoped<IConversationRepository, ConversationRepository>();
+builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 
 
 
@@ -126,6 +127,8 @@ builder.Services.AddAuthentication(options =>
 
 
 
+
+
 builder.Services.AddMvc();
 
 builder.WebHost.UseUrls("http://localhost:5013");
@@ -141,18 +144,21 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseRouting();
+app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
     endpoints.MapControllers();
-    endpoints.MapHub<ChatHub>("chatHub"); // Map SignalR hub endpoint
+    endpoints.MapHub<ChatHub>("/chatHub");
+
 });
 
 app.UseStaticFiles();
 app.UseCors();
 app.UseHttpsRedirection();
+app.UseAuthentication(); // Use authentication middleware
+
 app.UseAuthentication();
-app.UseAuthorization();
 app.MapControllers();
 
 

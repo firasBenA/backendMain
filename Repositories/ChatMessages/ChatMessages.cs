@@ -1,42 +1,40 @@
-using System;
+using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using TestApi.Models;
 
 namespace TestApi.Repositories
 {
-    public class ChatMessagesRepository : IChatMessageRepository
+    public class ChatMessageRepository : IChatMessageRepository
     {
-        private readonly AuthContext _dbContext;
+        private readonly AuthContext _context;
 
-        public ChatMessagesRepository(AuthContext dbContext)
+        public ChatMessageRepository(AuthContext context)
         {
-            _dbContext = dbContext;
-        }
-
-        public IEnumerable<ChatMessage> GetMessages()
-        {
-            return _dbContext.ChatMessages.OrderByDescending(m => m.CreatedAt);
+            _context = context;
         }
 
         public void AddMessage(ChatMessage message)
         {
-            _dbContext.ChatMessages.Add(message);
-            _dbContext.SaveChanges();
+            _context.ChatMessages.Add(message);
+            _context.SaveChanges();
         }
 
-        public IEnumerable<ChatMessage> GetMessages(int userId1, int userId2)
+        public async Task<List<ChatMessage>> SendMessage(int senderUserId, int receiverUserId, string message)
         {
-            return _dbContext.ChatMessages.Where(m => (m.IdSender == userId1 && m.IdReciver == userId2) ||
-                                        (m.IdSender == userId2 && m.IdReciver == userId1));
+            return await _context.ChatMessages
+                .Where(m => (m.IdSender == senderUserId && m.IdReciver == receiverUserId) || (m.IdSender == receiverUserId && m.IdReciver == senderUserId))
+                .ToListAsync();
         }
 
-         public async Task<IEnumerable<ChatMessage>> GetMessagesAsync(int userId1, int userId2)
-    {
-        return await _dbContext.ChatMessages
-            .Where(m => (m.IdSender == userId1 && m.IdReciver == userId2) ||
-                        (m.IdSender == userId2 && m.IdReciver == userId1))
-            .ToListAsync();
-    }
+        public Task<IEnumerable<ChatMessage>> GetMessagesAsync(int senderUserId, int receiverUserId)
+        {
+            // Assuming _messages contains all messages and you want to filter based on senderUserId and receiverUserId
+            var filteredMessages = _context.ChatMessages.Where(msg => msg.IdSender == senderUserId && msg.IdReciver == receiverUserId).ToList();
+            return Task.FromResult<IEnumerable<ChatMessage>>(filteredMessages);
+        }
+
+        
     }
 }

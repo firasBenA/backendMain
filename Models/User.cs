@@ -47,6 +47,8 @@ public partial class User
 
     public virtual ICollection<ChatMessage> ChatMessageIdSenderNavigations { get; set; } = new List<ChatMessage>();
 
+    public virtual ICollection<Conversation> Conversations { get; set; } = new List<Conversation>();
+
     public virtual ICollection<FeedBack> FeedBacks { get; set; } = new List<FeedBack>();
 
     public virtual Role? IdRoleNavigation { get; set; }

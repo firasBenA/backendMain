@@ -10,10 +10,13 @@ namespace YourNamespace.Controllers
     public class ConversationController : ControllerBase
     {
         private readonly IConversationRepository _conversationRepository;
+        private readonly IMessageRepository _messageRepository;
 
-        public ConversationController(IConversationRepository conversationRepository)
+
+        public ConversationController(IConversationRepository conversationRepository, IMessageRepository messageRepository)
         {
             _conversationRepository = conversationRepository;
+            _messageRepository = messageRepository;
         }
 
         [HttpGet("{conversationId}")]
@@ -25,6 +28,13 @@ namespace YourNamespace.Controllers
                 return NotFound();
             }
             return Ok(conversation);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Conversation>>> GetAllConversations()
+        {
+            var conversations = await _conversationRepository.GetAllConversations();
+            return Ok(conversations);
         }
 
         [HttpPost]
@@ -62,6 +72,17 @@ namespace YourNamespace.Controllers
 
             await _conversationRepository.DeleteConversation(conversationId);
             return NoContent();
+        }
+
+        [HttpGet("{conversationId}/messages")]
+        public async Task<ActionResult<List<Message>>> GetConversationMessages(int conversationId)
+        {
+            var messages = await _messageRepository.GetMessagesByConversationIdAsync(conversationId);
+            if (messages == null)
+            {
+                return NotFound();
+            }
+            return Ok(messages);
         }
     }
 }

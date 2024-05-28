@@ -5,9 +5,9 @@ namespace TestApi.Repositories
 {
     public interface IChatMessageRepository
     {
-        IEnumerable<ChatMessage> GetMessages();
         void AddMessage(ChatMessage message);
-        Task<IEnumerable<ChatMessage>> GetMessagesAsync(int userId1, int userId2);
+        Task<List<ChatMessage>> SendMessage(int senderUserId, int receiverUserId, string message);
+        Task<IEnumerable<ChatMessage>> GetMessagesAsync(int senderUserId, int receiverUserId);
 
     }
 }

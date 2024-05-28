@@ -11,7 +11,5 @@ public partial class UserConversation
 
     public int? UserId { get; set; }
 
-    public virtual Conversation? IdConversationNavigation { get; set; }
-
     public virtual User? User { get; set; }
 }
